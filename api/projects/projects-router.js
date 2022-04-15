@@ -15,6 +15,7 @@ router.get('/', (req, res) => {
             res.status(500).json({message: 'Projects could not be retrieved'});
         })
 });
+
 router.post('/', validateProject, (req, res, next) => {
     Projects.insert(req.validProject)
     .then(project => {
@@ -27,31 +28,34 @@ router.post('/', validateProject, (req, res, next) => {
         })
     })
 });
+
 router.get('/:id', ensureProjectIdExists, (req, res, next) => {
     res.status(200).json(req.existingProject)
 });
+
 router.put('/:id', ensureProjectIdExists, validateProject, (req, res, next) => {
     const id = req.existingProject.id;
     const changes = req.validProject;
 
     Projects.update(id, changes)
         .then(updated => {
-            res.status(200).json(updated)
+            res.status(200).json(updated);
         })
         .catch(err => {
-            console.log(err)
+            console.log(err);
             res.status(500).json({
-                messgae: 'Project could not be updated'
-            })
-        })
+                message: 'Project could not be updated'
+            });
+        });
 });
+
 router.delete('/:id', ensureProjectIdExists, (req, res, next) => {
     const id = req.existingProject.id;
     const removedProject = req.existingProject;
 
     Projects.remove(id)
         .then(() => {
-            res.status(200).json(removedProject)
+            res.status(200).json()
         })
         .catch(err => {
             console.log(err)
@@ -60,6 +64,7 @@ router.delete('/:id', ensureProjectIdExists, (req, res, next) => {
             })
         })
 });
+
 router.get('/:id/actions', ensureProjectIdExists, (req, res, next) => {
     const id = req.existingProject.id;
 
